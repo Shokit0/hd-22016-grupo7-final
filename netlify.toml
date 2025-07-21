@@ -4,4 +4,4 @@
   functions = "netlify/functions"
 
 [context.production.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
