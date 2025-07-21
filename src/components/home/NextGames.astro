@@ -1,24 +1,21 @@
 ---
 import { Icon } from "astro-icon/components";
 import CardsGame from "./CardsGame.astro";
+import { juegos } from "../../pages/api/juegos.js";
 
-const baseUrl = Astro.site || "http://localhost:4321";
-const response = await fetch(`${baseUrl}/api/juegos`);
-const juegosIniciales = await response.json();
+const juegosIniciales = juegos.slice(0, 30);
 ---
 
 <div class="flex justify-center items-center flex-col">
   <div
     id="juegos-container"
-    class="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-6"
-  >
+    class="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-6">
     {juegosIniciales.map((game) => <CardsGame {...game} />)}
   </div>
 
   <button
     id="ver-mas-btn"
-    class="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center"
-  >
+    class="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
     Ver más
     <Icon name="arrow-down" class="ml-1" />
   </button>

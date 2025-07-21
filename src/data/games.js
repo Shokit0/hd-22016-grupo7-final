@@ -2,7 +2,7 @@ export const games = [
     {
       title: "GTA VI",
       description: "GTA VI",
-      image: "/src/assets/images-home/gtavi.webp",
+      image: "/images-home/gtavi.webp",
       price: 150,
       discount: "5%",
       discountPrice: 0.05,
@@ -12,7 +12,7 @@ export const games = [
     {
       title: "Assassin's Creed Shadows",
       description: "Assassin's Creed Shadows",
-      image: "/src/assets/images-home/Assassin's Creed Shadows.webp",
+      image: "/images-home/Assassin's Creed Shadows.webp",
       price: 100,
       discount: "20%",
       discountPrice: 0.2,
@@ -22,7 +22,7 @@ export const games = [
     {
       title: "Avowed",
       description: "Avowed",
-      image: "/src/assets/images-home/Avowed.webp",
+      image: "/images-home/Avowed.webp",
       price: 80,
       discount: "10%",
       discountPrice: 0.1,
@@ -32,7 +32,7 @@ export const games = [
     {
       title: "Split Fiction",
       description: "Split Fiction",
-      image: "/src/assets/images-home/Split Fiction.webp",
+      image: "/images-home/Split Fiction.webp",
       price: 60,
       discount: "15%",
       discountPrice: 0.15,
@@ -42,7 +42,7 @@ export const games = [
     {
       title: "Elden Ring Nightreign",
       description: "Elden Ring Nightreign",
-      image: "/src/assets/images-home/Elden Ring Nightreign.webp",
+      image: "/images-home/Elden Ring Nightreign.webp",
       price: 100,
       discount: "15%",
       discountPrice: 0.15,
@@ -52,7 +52,7 @@ export const games = [
     {
         title: "ARK 2",
         description: "ARK 2",
-        image: "/src/assets/images-home/ARK 2.webp",
+        image: "/images-home/ARK 2.webp",
         price: 50,
         discount: "5%",
         discountPrice: 0.05,
@@ -62,7 +62,7 @@ export const games = [
       {
         title: "Fable",
         description: "Fable",
-        image: "/src/assets/images-home/Fable.webp",
+        image: "/images-home/Fable.webp",
         price: 60,
         discount: "5%",
         discountPrice: 0.05,
@@ -72,7 +72,7 @@ export const games = [
       {
         title: "Star Citizen",
         description: "Star Citizen",
-        image: "/src/assets/images-home/Star Citizen.webp",
+        image: "/images-home/Star Citizen.webp",
         price: 60,
         discount: "5%",
         discountPrice: 0.05,
@@ -82,7 +82,7 @@ export const games = [
       {
         title: "Gears of War: E-Day",
         description: "Gears of War: E-Day",
-        image: "/src/assets/images-home/Gears of War E-Day.webp",
+        image: "/images-home/Gears of War E-Day.webp",
         price: 90,
         discount: "15%",
         discountPrice: 0.15,
