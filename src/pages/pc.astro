@@ -1,0 +1,149 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PcGameCard from "../components/pcComponents/pcCard.astro";
+import { getCollection } from "astro:content";
+
+// Obtener todos los juegos
+const pcGames = await getCollection("pcContent");
+
+const url = new URL(Astro.request.url);
+const page = Number(url.searchParams.get("page")) || 1;
+const selectedPlatform = url.searchParams.get("plataforma") || "";
+const selectedGenre = url.searchParams.get("genero") || "";
+const selectedType = url.searchParams.get("tipo") || "";
+const minPrice = Number(url.searchParams.get("min")) || 0;
+const maxPrice = url.searchParams.get("max") ? Number(url.searchParams.get("max")) : Infinity;
+
+// Filtro de juegos
+const filteredGames = pcGames.filter((game) => {
+  const { plataforma, genero, tipo, precio } = game.data;
+
+  const matchesPlatform = selectedPlatform ? plataforma === selectedPlatform : true;
+  const matchesGenre = selectedGenre ? genero === selectedGenre : true;
+  const matchesType = selectedType ? tipo === selectedType : true;
+  const matchesPrice = precio >= minPrice && precio <= maxPrice;
+
+  return matchesPlatform && matchesGenre && matchesType && matchesPrice;
+});
+
+// Paginación
+const itemsPerPage = 6;
+const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
+const paginatedGames = filteredGames.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+---
+
+<Layout title="PC - Juegos Digitales">
+  <section class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- Carrusel -->
+    <div class="relative w-full h-64 md:h-96 overflow-hidden rounded-lg mb-8">
+      <div class="carousel-images w-full h-full absolute transition-opacity duration-1000">
+        <img src="/images-pc/banner1.jpg" class="w-full h-full object-cover absolute opacity-100 slide" />
+        <img src="/images-pc/banner2.jpg" class="w-full h-full object-cover absolute opacity-0 slide" />
+        <img src="/images-pc/banner3.jpg" class="w-full h-full object-cover absolute opacity-0 slide" />
+      </div>
+    </div>
+
+    <script>
+      const slides = [];
+      if (typeof window !== "undefined") {
+        document.addEventListener("DOMContentLoaded", () => {
+          const images = document.querySelectorAll(".carousel-images .slide");
+          let current = 0;
+
+          images.forEach((img, idx) => slides.push(img));
+
+          setInterval(() => {
+            slides[current].classList.remove("opacity-100");
+            slides[current].classList.add("opacity-0");
+
+            current = (current + 1) % slides.length;
+
+            slides[current].classList.remove("opacity-0");
+            slides[current].classList.add("opacity-100");
+          }, 5000);
+        });
+      }
+    </script>
+
+    <!-- Filtros -->
+    <form method="GET" class="bg-white shadow-md rounded-lg p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-2">
+        <select name="plataforma" class="border border-gray-300 rounded px-3 py-1 text-sm">
+          <option value="">Plataforma</option>
+          <option value="Steam" selected={selectedPlatform === "Steam"}>Steam</option>
+          <option value="Epic Games" selected={selectedPlatform === "Epic Games"}>Epic Games</option>
+          <option value="Ubisoft" selected={selectedPlatform === "Ubisoft"}>Ubisoft</option>
+        </select>
+
+        <select name="genero" class="border border-gray-300 rounded px-3 py-1 text-sm">
+          <option value="">Género</option>
+          <option value="Acción" selected={selectedGenre === "Acción"}>Acción</option>
+          <option value="Estrategia" selected={selectedGenre === "Estrategia"}>Estrategia</option>
+          <option value="Deportes" selected={selectedGenre === "Deportes"}>Deportes</option>
+        </select>
+
+        <select name="tipo" class="border border-gray-300 rounded px-3 py-1 text-sm">
+          <option value="">Tipo</option>
+          <option value="Clave" selected={selectedType === "Clave"}>Clave</option>
+          <option value="Regalo" selected={selectedType === "Regalo"}>Regalo</option>
+          <option value="Cuenta" selected={selectedType === "Cuenta"}>Cuenta</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="number" name="min" value={minPrice !== 0 ? minPrice : ""} placeholder="Min $" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm" />
+        <span>-</span>
+        <input type="number" name="max" value={maxPrice !== Infinity ? maxPrice : ""} placeholder="Max $" class="w-20 px-2 py-1 border border-gray-300 rounded text-sm" />
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded text-sm">Aplicar</button>
+      </div>
+    </form>
+
+    <!-- Galería -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        paginatedGames.map((game) => (
+          <a href={`/pc/${game.slug}`} class="block transform hover:-translate-y-1 hover:shadow-lg transition duration-300">
+            <PcGameCard {...game.data} />
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Paginación -->
+    <div class="mt-10 flex justify-center space-x-2">
+      {
+        Array.from({ length: totalPages }, (_, i) => {
+          const p = i + 1;
+          const isActive = p === page;
+
+          const query = new URLSearchParams({
+            plataforma: selectedPlatform,
+            genero: selectedGenre,
+            tipo: selectedType,
+            min: minPrice ? String(minPrice) : "",
+            max: maxPrice !== Infinity ? String(maxPrice) : "",
+            page: String(p),
+          });
+
+          return (
+            <a
+              href={`?${query.toString()}`}
+              class={`px-3 py-1 rounded border text-sm ${
+                isActive ? "bg-green-500 text-white" : "bg-white hover:bg-gray-100"
+              }`}
+            >
+              {p}
+            </a>
+          );
+        })
+      }
+    </div>
+
+    <!-- Resumen -->
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Mostrando {(page - 1) * itemsPerPage + 1} a {Math.min(page * itemsPerPage, filteredGames.length)} de {filteredGames.length} juegos
+    </p>
+
+  </section>
+</Layout>

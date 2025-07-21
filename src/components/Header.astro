@@ -1,0 +1,154 @@
+---
+
+---
+
+<header class="bg-black" transition:animate="none">
+  <nav
+    class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+    aria-label="Global"
+  >
+    <div class="flex lg:flex-1">
+      <a href="/" class="-m-1.5 p-1.5">
+        <span class="sr-only">G2A</span>
+        <img
+          class="h-8 w-auto"
+          src="/src/assets/logo_g2a_white.webp"
+          alt="G2A logo"
+        />
+      </a>
+    </div>
+    <div class="flex lg:hidden">
+      <button
+        id="openMenuBtn"
+        type="button"
+        class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+      >
+        <span class="sr-only">Abrir Menu</span>
+        <svg
+          class="size-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+          data-slot="icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="hidden lg:flex lg:gap-x-12">
+      <a
+        href="/pc"
+        class="text-xl font-semibold text-white hover:text-amber-600 rounded-lg px-3 py-2"
+        >PC</a
+      >
+      <a
+        href="/play-station"
+        class="text-xl font-semibold text-white hover:text-amber-600 rounded-lg px-3 py-2"
+        >Play Station</a
+      >
+      <a
+        href="/xbox"
+        class="text-xl font-semibold text-white hover:text-amber-600 rounded-lg px-3 py-2"
+        >Xbox</a
+      >
+    </div>
+    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+      <a href="#" class="text-xl font-semibold text-white hover:text-amber-600"
+        >Inicia Sesión <span aria-hidden="true">&rarr;</span></a
+      >
+    </div>
+  </nav>
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="lg:hidden hidden" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 z-10">
+      <div
+        class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 bg-black"
+      >
+        <div class="flex items-center justify-between">
+          <a href="/" class="-m-1.5 p-1.5">
+            <span class="sr-only">G2A</span>
+            <img
+              class="h-8 w-auto"
+              src="/src/assets/logo_g2a_white.webp"
+              alt="G2A logo"
+            />
+          </a>
+          <button
+            id="closeMenuBtn"
+            type="button"
+            class="-m-2.5 rounded-md p-2.5 text-white"
+          >
+            <span class="sr-only">Cerrar menu</span>
+            <svg
+              class="size-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+              data-slot="icon"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10">
+            <div class="space-y-2 py-6">
+              <a
+                href="/pc"
+                class="-mx-3 block rounded-lg px-3 py-2 text-2xl font-semibold text-white hover:text-blue-600"
+                >PC</a
+              >
+              <a
+                href="/play-station"
+                class="-mx-3 block rounded-lg px-3 py-2 text-2xl font-semibold text-white hover:text-blue-600"
+                >Play Station</a
+              >
+              <a
+                href="/xbox"
+                class="-mx-3 block rounded-lg px-3 py-2 text-2xl font-semibold text-white hover:text-blue-600"
+                >Xbox</a
+              >
+            </div>
+            <div class="py-6">
+              <a
+                href="#"
+                class="-mx-3 block rounded-lg px-3 py-2.5 text-2xl font-semibold text-white hover:text-blue-600"
+                >Inicia Sesión</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script type="module">
+  document.addEventListener("DOMContentLoaded", () => {
+    const openMenuBtn = document.getElementById("openMenuBtn");
+    const closeMenuBtn = document.getElementById("closeMenuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (openMenuBtn && closeMenuBtn && mobileMenu) {
+      // Abrir menú móvil
+      openMenuBtn.addEventListener("click", () => {
+        mobileMenu.classList.remove("hidden");
+      });
+
+      // Cerrar menú móvil
+      closeMenuBtn.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+      });
+    }
+  });
+</script>

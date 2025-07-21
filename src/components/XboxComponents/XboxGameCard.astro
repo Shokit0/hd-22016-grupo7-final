@@ -1,0 +1,100 @@
+---
+// filepath: e:\Proyecto_Herramientas de desarrollo\hd-22016-grupo7-apf1\src\components\XboxGameCard.astro
+const { title, type, region, price, originalPrice, discount, image } =
+  Astro.props;
+const id = title
+  .toLowerCase()
+  .replace(/\s+/g, "-")
+  .replace(/[^a-z0-9-]/g, ""); // id único
+---
+
+<div id={`card-${id}`} class="relative">
+  <div
+    class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+  >
+    <img
+      src={image}
+      alt={title}
+      loading="lazy"
+      class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+    />
+
+    <button
+      type="button"
+      class="favorite-btn absolute top-3 right-3 bg-white rounded-full p-1 shadow-md hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+      data-id={id}
+      aria-label="Añadir a favoritos"
+    >
+      <svg
+        id={`icon-${id}`}
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-400 transition-colors duration-300"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+        2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81
+        4.5 2.09C13.09 3.81 14.76 3 16.5
+        3 19.58 3 22 5.42 22 8.5c0 3.78-3.4
+        6.86-8.55 11.54L12 21.35z"
+        ></path>
+      </svg>
+    </button>
+
+    <div class="p-4">
+      <h2 class="text-base font-semibold text-gray-800 mb-1 truncate">
+        {title}
+      </h2>
+      <div class="text-xs text-gray-500 mb-2">{type} • {region}</div>
+
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-green-600 font-bold text-lg">
+          {price.toFixed(2)}€
+        </span>
+        <span class="text-gray-400 line-through text-sm"
+          >{originalPrice.toFixed(2)}€</span
+        >
+      </div>
+
+      <div class="text-xs mt-2 text-gray-700">
+        Puede activarse en: <span class="font-bold">Perú</span>
+      </div>
+
+      <div
+        class="mt-3 text-xs inline-block bg-red-500 text-white px-2.5 py-1 rounded-full font-medium"
+      >
+        -{discount}%
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Verifica si el evento ya está registrado
+  if (!window.__xboxGameCardClickListenerRegistered) {
+    window.__xboxGameCardClickListenerRegistered = true;
+
+    document.addEventListener("click", function (e) {
+      const button = e.target.closest("button.favorite-btn");
+      if (!button) return;
+
+      // 🔒 Detenemos propagación para que no actúe como si se hiciera clic en la tarjeta
+      e.stopPropagation();
+      e.preventDefault();
+
+      const id = button.getAttribute("data-id");
+      const icon = document.getElementById(`icon-${id}`);
+      if (!icon) return;
+
+      // Alternar color
+      if (icon.classList.contains("text-gray-400")) {
+        icon.classList.remove("text-gray-400");
+        icon.classList.add("text-red-500"); // Usamos un color rojo para "favorito"
+      } else {
+        icon.classList.remove("text-red-500");
+        icon.classList.add("text-gray-400");
+      }
+    });
+  }
+</script>

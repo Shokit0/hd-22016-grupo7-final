@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PC - Juegos Digitales</title>
+  </head>
+  <body>
+    <section>
+      <!-- Filtros -->
+      <form method="GET">
+        <select name="plataforma">
+          <option value="">Plataforma</option>
+          <option value="Steam">Steam</option>
+          <option value="Epic Games">Epic Games</option>
+          <option value="Ubisoft">Ubisoft</option>
+        </select>
+
+        <select name="genero">
+          <option value="">Género</option>
+          <option value="Acción">Acción</option>
+          <option value="Estrategia">Estrategia</option>
+          <option value="Deportes">Deportes</option>
+        </select>
+
+        <select name="tipo">
+          <option value="">Tipo</option>
+          <option value="Clave">Clave</option>
+          <option value="Regalo">Regalo</option>
+          <option value="Cuenta">Cuenta</option>
+        </select>
+
+        <input type="number" name="min" placeholder="Min $" value="0" />
+        <input type="number" name="max" placeholder="Max $" value="100" />
+
+        <button type="submit">Aplicar</button>
+      </form>
+
+      <!-- Galería de juegos (mock) -->
+      <div class="grid">
+        <a href="/pc/game-1">Juego 1</a>
+        <a href="/pc/game-2">Juego 2</a>
+        <a href="/pc/game-3">Juego 3</a>
+      </div>
+
+      <!-- Paginación -->
+      <div>
+        <a href="?page=1">1</a>
+        <a href="?page=2">2</a>
+        <a href="?page=3">3</a>
+      </div>
+
+      <!-- Resumen -->
+      <p>Mostrando 1 a 3 de 15 juegos</p>
+    </section>
+  </body>
+</html>

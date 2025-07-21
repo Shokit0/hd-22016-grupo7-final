@@ -1,0 +1,328 @@
+---
+import ContentCarousel from "./ContentCarousel.astro";
+
+import { games } from "../../data/games.js";
+
+const gamesSelect = games;
+---
+
+<style>
+  .carousel-container {
+    perspective: 1000px;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .carousel-track {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .carousel-item {
+    backface-visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .carousel-item.active {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+
+  @media (max-width: 640px) {
+    .carousel-item.prev {
+      opacity: 0;
+      transform: scale(0.8) translateX(-50%) translateZ(-100px);
+    }
+
+    .carousel-item.next {
+      opacity: 0;
+      transform: scale(0.8) translateX(50%) translateZ(-100px);
+    }
+  }
+
+  @media (min-width: 641px) {
+    .carousel-item.prev {
+      opacity: 0.7;
+      transform: scale(0.9) translateX(-100%) translateZ(-100px);
+    }
+
+    .carousel-item.next {
+      opacity: 0.7;
+      transform: scale(0.9) translateX(100%) translateZ(-100px);
+    }
+  }
+
+  .carousel-item.hidden {
+    opacity: 0;
+    transform: scale(0.8) translateZ(-200px);
+  }
+
+  .nav-button {
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  @media (hover: hover) {
+    .nav-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+  }
+
+  .nav-button:active {
+    transform: scale(0.95);
+  }
+
+  .progress-bar {
+    transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+</style>
+
+<div
+  class="bg-linear-to-b from-orange-400 to-orange-700 flex items-center justify-center overflow-hidden">
+  <div class="w-full max-w-6xl mx-auto">
+    <!-- Carousel Container -->
+    <div class="carousel-container relative">
+      <!-- Navigation buttons -->
+      <button
+        class="nav-button prev-button absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-20 text-white touch-manipulation"
+        title="Previous slide">
+        <svg
+          class="w-5 h-5 sm:w-6 sm:h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+
+      <button
+        class="nav-button next-button absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-20 text-white touch-manipulation"
+        title="Next slide">
+        <svg
+          class="w-5 h-5 sm:w-6 sm:h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+
+      <!-- Carousel Content -->
+      <div
+        class="carousel-track relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
+        {
+          gamesSelect.map((game, index) => (
+            <div
+              class={`carousel-item ${index === 0 ? "active" : "hidden"} absolute top-0 left-0 w-full h-full`}>
+              <ContentCarousel
+                imageSrc={game.image}
+                altText={game.title}
+                title={game.title}
+                trailer={game.trailer}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Buttons Bottom -->
+      <div
+        class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1 sm:gap-2 z-20">
+        {
+          gamesSelect.map((game) => (
+            <button
+              class="w-8 sm:w-12 h-1 sm:h-1.5 rounded-full bg-white/20 hover:bg-white/60 transition-colors"
+              title={game.title}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  id="trailerModal"
+  class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4">
+  <div class="relative w-full h-3/5 max-w-6xl">
+    <button
+      id="closeModal"
+      class="absolute -top-10 right-0 text-white text-3xl z-50">&times;</button
+    >
+    <iframe
+      id="trailerVideo"
+      class="w-full h-full"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<script type="module">
+  document.addEventListener("DOMContentLoaded", () => {
+    let currentSlide = 0;
+    const nextButton = document.querySelector(".next-button");
+    const prevButton = document.querySelector(".prev-button");
+    const slides = document.querySelectorAll(".carousel-item");
+    const indicators = document.querySelectorAll(
+      ".bottom-2 button, .bottom-4 button",
+    );
+    let autoAdvanceTimer;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const carousel = document.querySelector(".carousel-track");
+
+    carousel.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartX = e.touches[0].screenX;
+      },
+      { passive: true },
+    );
+
+    carousel.addEventListener(
+      "touchend",
+      (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      },
+      { passive: true },
+    );
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }
+
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.className = "carousel-item absolute top-0 left-0 w-full h-full";
+        if (index === currentSlide) {
+          slide.classList.add("active");
+        } else if (index === (currentSlide + 1) % slides.length) {
+          slide.classList.add("next");
+        } else if (
+          index ===
+          (currentSlide - 1 + slides.length) % slides.length
+        ) {
+          slide.classList.add("prev");
+        } else {
+          slide.classList.add("hidden");
+        }
+      });
+
+      // Cambios
+      indicators.forEach((indicator, index) => {
+        indicator.className = `w-8 sm:w-12 h-1 sm:h-1.5 rounded-full transition-colors ${
+          index === currentSlide ? "bg-white/40" : "bg-white/20"
+        } hover:bg-white/60`;
+      });
+    }
+
+    function resetAutoAdvance() {
+      clearInterval(autoAdvanceTimer);
+      autoAdvanceTimer = setInterval(nextSlide, 5000);
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateSlides();
+      resetAutoAdvance();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateSlides();
+      resetAutoAdvance();
+    }
+
+    // Event click
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener("click", () => {
+        currentSlide = index;
+        updateSlides();
+        resetAutoAdvance();
+      });
+    });
+
+    // Autoavance
+    resetAutoAdvance();
+    updateSlides();
+
+    nextButton?.addEventListener("click", nextSlide);
+    prevButton?.addEventListener("click", prevSlide);
+
+    // Modal
+    const modal = document.getElementById("trailerModal");
+    const trailerVideo = document.getElementById("trailerVideo");
+    const closeModal = document.getElementById("closeModal");
+    const carouselItems = document.querySelectorAll(".carousel-item");
+
+    carouselItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        // Evitar que se active al hacer clic en los botones de navegación
+        if (e.target.closest(".nav-button")) return;
+
+        const trailer = item
+          .querySelector("[data-trailer]")
+          ?.getAttribute("data-trailer");
+        if (trailer) {
+          let embedUrl = trailer;
+          if (trailer.includes("youtube.com/watch")) {
+            const videoId = trailer.split("v=")[1];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+          }
+
+          trailerVideo.src = embedUrl;
+          modal.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+      });
+    });
+
+    // Cerrar modal
+    closeModal.addEventListener("click", () => {
+      modal.classList.add("hidden");
+      trailerVideo.src = "";
+      document.body.style.overflow = "";
+    });
+
+    // Cerrar al hacer clic fuera del contenido
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.add("hidden");
+        trailerVideo.src = "";
+        document.body.style.overflow = "";
+      }
+    });
+
+    // Cerrar con ESC
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+        modal.classList.add("hidden");
+        trailerVideo.src = "";
+        document.body.style.overflow = "";
+      }
+    });
+  });
+</script>
